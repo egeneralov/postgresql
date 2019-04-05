@@ -46,7 +46,7 @@ pgdg_postgresql_conf:
   - { "k": "max_wal_size", "v": "4GB" }
   - { "k": "min_wal_size", "v": "320MB" }
   - { "k": "checkpoint_completion_target", "v": "0.9" }
-  - { "k": "archive_mode", "v": "on" }
+  - { "k": "archive_mode", "v": "off" }
   - { "k": "archive_command", "v": "'/bin/true'" }
   - { "k": "max_wal_senders", "v": "10" }
   - { "k": "wal_keep_segments", "v": "10" }
