@@ -1,14 +1,14 @@
 ---
 # tasks file for egeneralov.postgresql
 
-- name: "Assert if {{ pgdg_version }} is supported by role"
+- name: "assert if {{ pgdg_version }} is supported by role"
   assert:
     that:
       - "pgdg_version in pgdg_supported_versions"
     fail_msg: "{{ pgdg_version }} is not supported version"
     success_msg: "Provisioning postgresql=={{ pgdg_version }}"
 
-- name: Install https transport and privacy guard tools
+- name: install https transport and privacy guard tools
   apt:
     update_cache: yes
     cache_valid_time: 3600
@@ -16,22 +16,22 @@
       - apt-transport-https
       - gnupg2
 
-- name: Import postgresql repository key
+- name: import postgresql repository key
   apt_key:
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
   register: pgdg_repo_key
 
-- name: Add postgresql repository
+- name: add postgresql repository
   apt_repository:
     repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
   register: pgdg_repo
 
-- name: Update apt cache
+- name: update apt cache
   apt:
     update_cache: yes
   when: pgdg_repo is changed or pgdg_repo_key is changed
 
-- name: Install postgresql
+- name: install postgresql
   apt:
     name:
       - "postgresql-{{ pgdg_version }}"
@@ -41,7 +41,7 @@
       - "postgresql-server-dev-{{ pgdg_version }}"
       - "postgresql-{{ pgdg_version }}-pg-stat-kcache"
 
-- name: Install tools
+- name: install tools
   apt:
     name:
       - "python-psycopg2"
@@ -67,11 +67,21 @@
     dest: "/etc/postgresql/{{ pgdg_version }}/main/pg_hba.conf"
   register: pgdg_hba
 
-- name: Restart postgresql
+- name: restart postgresql
   systemd:
     name: "postgresql@{{ pgdg_version }}-main.service"
     state: restarted
   when: pgdg_conf is changed or pgdg_hba is changed
+
+- name: create databases
+  become: true
+  become_user: postgres
+  postgresql_db:
+    encoding: UTF-8
+    name: "{{ item.database }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - "{{ pgdg_users }}"
 
 - name: create users
   become: true
@@ -80,15 +90,29 @@
     name: "{{ item.user }}"
     password: "{{ item.password }}"
     state: "{{ item.state | default('present') }}"
+    db: "{{ item.database | default(omit) }}"
   with_items:
     - "{{ pgdg_users }}"
 
-- name: create databases
+- name: DB permissions
+  postgresql_privs:
+    db: postgres
+    privs: "{{ item.privs | default('ALL') }}"
+    type: database
+    obj: "{{ item.database }}"
+    role: "{{ item.user }}"
+    state: "{{ item.state | default('present') }}"
   become: true
   become_user: postgres
-  postgresql_db:
-    encoding: UTF-8
-    name: "{{ item.name }}"
+  with_items: "{{ pgdg_users }}"
+
+- name: in-DB permissions
+  postgresql_privs:
+    database: "{{ item.database }}"
+    roles: "{{ item.user }}"
+    objs: ALL_IN_SCHEMA
+    privs: "{{ item.privs | default('ALL') }}"
     state: "{{ item.state | default('present') }}"
-  with_items:
-    - "{{ pgdg_databases }}"
+  become: true
+  become_user: postgres
+  with_items: "{{ pgdg_users }}"
