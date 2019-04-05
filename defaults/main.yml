@@ -18,7 +18,7 @@ pgdg_postgresql_conf:
   - { "k": "hba_file", "v": "'/etc/postgresql/{{ pgdg_version }}/main/pg_hba.conf'" }
   - { "k": "ident_file", "v": "'/etc/postgresql/{{ pgdg_version }}/main/pg_ident.conf'" }
   - { "k": "external_pid_file", "v": "'/var/run/postgresql/{{ pgdg_version }}-main.pid'" }
-  - { "k": "listen_addresses", "v": "'*'" }
+  - { "k": "listen_addresses", "v": "'127.0.0.1'" }
   - { "k": "port", "v": "5432" }
   - { "k": "max_connections", "v": "1000" }
   - { "k": "superuser_reserved_connections", "v": "10" }
@@ -27,7 +27,7 @@ pgdg_postgresql_conf:
   - { "k": "ssl_cert_file", "v": "'/etc/ssl/certs/ssl-cert-snakeoil.pem'" }
   - { "k": "ssl_key_file", "v": "'/etc/ssl/private/ssl-cert-snakeoil.key'" }
   - { "k": "shared_buffers", "v": "249MB" }
-  - { "k": "huge_pages", "v": "try" }
+  - { "k": "huge_pages", "v": "off" }
   - { "k": "maintenance_work_mem", "v": "128MB" }
   - { "k": "autovacuum_work_mem", "v": "-1" }
   - { "k": "dynamic_shared_memory_type", "v": "posix" }
