@@ -1,0 +1,14 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# {{ ansible_managed }}
+{% for i in pgdg_pg_hba_conf %}
+{{ i.connection_type }}{{'\t\t'}}{{ i.database }}{{'\t\t'}}{{ i.user }}{{'\t\t'}}{{ i.address }}{{'\t'}}{% if i.address == '' %}{{'\t'}}{% endif %}{{ i.method }}
+{% endfor %}
+
+
+
+
+local   all             postgres                                peer
+local   all             all                                     peer
+host    all             all             127.0.0.1/32            md5
+host    all             all             ::1/128                 md5
+

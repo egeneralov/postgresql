@@ -51,14 +51,21 @@
     path: "/etc/postgresql/{{ pgdg_version }}/main/postgresql.conf"
     regexp: '#?{{ item.k }} =.*'
     line: '{{ item.k }} = {{ item.v }}'
+    state: "{{ item.state | default('present') }}"
   with_items: "{{ pgdg_postgresql_conf }}"
   register: pgdg_conf
+
+- name: pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "/etc/postgresql/{{ pgdg_version }}/main/pg_hba.conf"
+  register: pgdg_hba
 
 - name: Restart postgresql
   systemd:
     name: "postgresql@{{ pgdg_version }}-main.service"
     state: restarted
-  when: pgdg_conf is changed
+  when: pgdg_conf is changed or pgdg_hba is changed
 
 - name: create users
   become: true

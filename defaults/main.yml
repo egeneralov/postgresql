@@ -251,3 +251,18 @@ pgdg_postgresql_conf:
 # - {"k":"include_if_exists","v":"'exists.conf'"}
 # - {"k":"include","v":"'special.conf'"}
 
+pgdg_pg_hba_conf:
+  - {
+      "connection_type": "local",
+      "database": "all",
+      "user": "all",
+      "address": "",
+      "method": "peer"
+    }
+  - {
+      "connection_type": "host",
+      "database": "all",
+      "user": "all",
+      "address": "127.0.0.1/32",
+      "method": "md5"
+    }
