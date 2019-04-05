@@ -56,6 +56,11 @@
   with_items: "{{ pgdg_postgresql_conf }}"
   register: pgdg_conf
 
+- name: conf.d
+  file:
+    path: "/etc/postgresql/{{ pgdg_version }}/main/conf.d"
+    state: directory
+
 - name: pg_hba.conf
   template:
     src: pg_hba.conf.j2
