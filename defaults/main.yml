@@ -82,7 +82,7 @@ pgdg_postgresql_conf:
   - {"k":"autovacuum_vacuum_scale_factor","v":"0.05"}
   - {"k":"autovacuum_analyze_scale_factor","v":"0.05"}
   - {"k":"idle_in_transaction_session_timeout","v":"0"}
-  - {"k":"datestyle","v":"'iso,"}
+  - {"k":"datestyle","v":"'iso, dmy'"}
   - {"k":"timezone","v":"'UTC'"}
   - {"k":"lc_messages","v":"'en_US.UTF-8'"}
   - {"k":"lc_monetary","v":"'en_US.UTF-8'"}

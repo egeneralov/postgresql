@@ -39,6 +39,7 @@
       - "postgresql-doc-{{ pgdg_version }}"
       - "postgresql-client-{{ pgdg_version }}"
       - "postgresql-server-dev-{{ pgdg_version }}"
+      - "postgresql-{{ pgdg_version }}-pg-stat-kcache"
 
 - name: Install tools
   apt:
