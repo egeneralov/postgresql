@@ -1,6 +1,13 @@
 ---
 # tasks file for egeneralov.postgresql
 
+- name: "Assert if {{ pgdg_version }} is supported by role"
+  assert:
+    that:
+      - "pgdg_version in pgdg_supported_versions"
+    fail_msg: "{{ pgdg_version }} is not supported version"
+    success_msg: "Provisioning postgresql=={{ pgdg_version }}"
+
 - name: Install https transport and privacy guard tools
   apt:
     update_cache: yes
@@ -23,3 +30,52 @@
   apt:
     update_cache: yes
   when: pgdg_repo is changed or pgdg_repo_key is changed
+
+- name: Install postgresql
+  apt:
+    name:
+      - "postgresql-{{ pgdg_version }}"
+      - "postgresql-common"
+      - "postgresql-doc-{{ pgdg_version }}"
+      - "postgresql-client-{{ pgdg_version }}"
+      - "postgresql-server-dev-{{ pgdg_version }}"
+
+- name: Install tools
+  apt:
+    name:
+      - "python-psycopg2"
+      - "sudo"
+
+- name: postgresql.conf
+  lineinfile:
+    path: "/etc/postgresql/{{ pgdg_version }}/main/postgresql.conf"
+    regexp: '#?{{ item.k }} =.*'
+    line: '{{ item.k }} = {{ item.v }}'
+  with_items: "{{ pgdg_postgresql_conf }}"
+  register: pgdg_conf
+
+- name: Restart postgresql
+  systemd:
+    name: "postgresql@{{ pgdg_version }}-main.service"
+    state: restarted
+  when: pgdg_conf is changed
+
+- name: create users
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - "{{ pgdg_users }}"
+
+- name: create databases
+  become: true
+  become_user: postgres
+  postgresql_db:
+    encoding: UTF-8
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - "{{ pgdg_databases }}"
