@@ -265,3 +265,14 @@ pgdg_pg_hba_conf:
       "address": "127.0.0.1/32",
       "method": "md5"
     }
+
+
+
+pgdg_supported_versions:
+  - 9.2
+  - 9.3
+  - 9.4
+  - 9.5
+  - 9.6
+  - 10
+  - 11

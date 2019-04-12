@@ -18,12 +18,7 @@ See `defaults/main.yml` for full list.
 - **pgdg_users**:
   - user: root
     password: root
-    databases:
-      - root
-
-- **pgdg_databases**:
-  - name: root
-    owner: root
+    database: root
 
 - **pgdg_postgresql_conf**:
   - {
@@ -68,11 +63,7 @@ Example Playbook
         pgdg_users:
           - user: root
             password: root
-            databases:
-              - root
-        pgdg_databases:
-          - name: root
-            owner: root
+            database: root
         pgdg_pg_hba_conf:
           - {
               "connection_type": "local",

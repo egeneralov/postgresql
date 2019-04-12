@@ -1,11 +1,2 @@
 ---
 # vars file for egeneralov.postgresql
-
-pgdg_supported_versions:
-  - 9.2
-  - 9.3
-  - 9.4
-  - 9.5
-  - 9.6
-  - 10
-  - 11
