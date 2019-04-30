@@ -1,0 +1,27 @@
+
+- name: "configure : postgresql.conf"
+  lineinfile:
+    path: "/etc/postgresql/{{ pgdg_version }}/main/postgresql.conf"
+    regexp: '#?{{ item.k }} =.*'
+    line: '{{ item.k }} = {{ item.v }}'
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ pgdg_postgresql_conf }}"
+  register: pgdg_conf
+
+- name: "configure : conf.d"
+  file:
+    path: "/etc/postgresql/{{ pgdg_version }}/main/conf.d"
+    state: directory
+
+- name: "configure : pg_hba.conf"
+  template:
+    src: pg_hba.conf.j2
+    dest: "/etc/postgresql/{{ pgdg_version }}/main/pg_hba.conf"
+  register: pgdg_hba
+
+- name: "(re)start : postgresql"
+  systemd:
+    name: "postgresql@{{ pgdg_version }}-main.service"
+    state: "{% if pgdg_conf is changed or pgdg_hba is changed %}re{% endif %}started"
+    enabled: yes
+    daemon_reload: "{% if pgdg_installation is changed %}yes{% else %}no{% endif %}"

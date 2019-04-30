@@ -1,0 +1,44 @@
+
+- name: "manage : create databases"
+  become: true
+  become_user: postgres
+  postgresql_db:
+    encoding: UTF-8
+    name: "{{ item.database }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - "{{ pgdg_users }}"
+
+- name: "manage : create users"
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    state: "{{ item.state | default('present') }}"
+    db: "{{ item.database | default(omit) }}"
+  with_items:
+    - "{{ pgdg_users }}"
+
+- name: "manage : DB permissions"
+  postgresql_privs:
+    db: postgres
+    privs: "{{ item.privs | default('ALL') }}"
+    type: database
+    obj: "{{ item.database }}"
+    role: "{{ item.user }}"
+    state: "{{ item.state | default('present') }}"
+  become: true
+  become_user: postgres
+  with_items: "{{ pgdg_users }}"
+
+- name: "manage : in-DB permissions"
+  postgresql_privs:
+    database: "{{ item.database }}"
+    roles: "{{ item.user }}"
+    objs: ALL_IN_SCHEMA
+    privs: "{{ item.privs | default('ALL') }}"
+    state: "{{ item.state | default('present') }}"
+  become: true
+  become_user: postgres
+  with_items: "{{ pgdg_users }}"

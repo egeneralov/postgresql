@@ -8,6 +8,11 @@ Requirements
 
 Debian-based system, supported by official repository.
 
+Dependencies
+------------
+
+- [egeneralov.postgresql-repository](https://github.com/egeneralov/postgresql-repository)
+
 Role Variables
 --------------
 
@@ -37,7 +42,6 @@ See `defaults/main.yml` for full list.
     "k": "huge_pages",
     "v": "try"
   }
-
 
 - **pgdg_pg_hba_conf**:
   - {

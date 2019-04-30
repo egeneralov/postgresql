@@ -1,0 +1,17 @@
+
+- name: "install : postgresql"
+  apt:
+    name:
+      - "postgresql-{{ pgdg_version }}"
+      - "postgresql-common"
+      - "postgresql-doc-{{ pgdg_version }}"
+      - "postgresql-client-{{ pgdg_version }}"
+      - "postgresql-server-dev-{{ pgdg_version }}"
+      - "postgresql-{{ pgdg_version }}-pg-stat-kcache"
+  register: pgdg_installation
+
+- name: "install : tools"
+  apt:
+    name:
+      - "python-psycopg2"
+      - "sudo"
