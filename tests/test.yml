@@ -1,5 +1,12 @@
 ---
-- hosts: localhost
+
+- hosts: postgresql
   remote_user: root
+  vars:
+    pgdg_version: 9.6
+    pgdg_users:
+      - user: root
+        password: root
+        database: root
   roles:
     - egeneralov.postgresql

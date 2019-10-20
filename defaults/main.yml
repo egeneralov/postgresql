@@ -276,3 +276,4 @@ pgdg_supported_versions:
   - 9.6
   - 10
   - 11
+  - 12
