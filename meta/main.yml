@@ -7,6 +7,7 @@ galaxy_info:
   - name: Debian
     versions:
     - sid
+    - bullseye
     - buster
     - stretch
     - jessie
@@ -18,7 +19,7 @@ galaxy_info:
     versions:
     - bionic
     - cosmic
-#    - disco
+    - disco
     - lucid
     - precise
     - saucy
@@ -26,7 +27,14 @@ galaxy_info:
     - wily
     - xenial
     - zesty
+  - name: CentOS
+    versions:
+    - 8
+  - name: RHEL
+    versions:
+    - 8
   galaxy_tags:
+    - pgsql
     - postgres
     - postgresql
 dependencies:

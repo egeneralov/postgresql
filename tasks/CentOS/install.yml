@@ -1,0 +1,13 @@
+---
+
+- name: "detect : postgresql major version"
+  set_fact:
+    postgresql_version_terse: "{{ pgdg_version | string }}"
+
+- name: "install : postgresql"
+  ansible.builtin.dnf:
+    name:
+      - "@postgresql:{{ postgresql_version_terse.split('.')[0] }}"
+      - "python3-psycopg2"
+      - "sudo"
+  register: pgdg_installation

@@ -1,13 +1,19 @@
 ---
 # tasks file for egeneralov.postgresql
 
-- name: "check : if {{ pgdg_version }} is supported by role"
-  assert:
-    that:
-      - "pgdg_version in pgdg_supported_versions"
-    fail_msg: "{{ pgdg_version }} is not supported version"
-    success_msg: "Provisioning postgresql=={{ pgdg_version }}"
+# - name: "check : if {{ pgdg_version }} is supported by role"
+#   assert:
+#     that:
+#       - "pgdg_version in pgdg_supported_versions"
+#     fail_msg: "{{ pgdg_version }} is not supported version"
+#     success_msg: "Provisioning postgresql=={{ pgdg_version }}"
 
-- import_tasks: install.yml
-- import_tasks: configure.yml
-- import_tasks: manage.yml
+- include_tasks: "{{ ansible_facts['distribution'] }}/{{ file }}.yml"
+  with_items:
+    - install
+    - configure
+  loop_control:
+    loop_var: file
+
+- name: manage
+  import_tasks: manage.yml

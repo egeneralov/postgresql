@@ -8,10 +8,6 @@
       - "postgresql-client-{{ pgdg_version }}"
       - "postgresql-server-dev-{{ pgdg_version }}"
       - "postgresql-{{ pgdg_version }}-pg-stat-kcache"
-  register: pgdg_installation
-
-- name: "install : tools"
-  apt:
-    name:
       - "python-psycopg2"
       - "sudo"
+  register: pgdg_installation

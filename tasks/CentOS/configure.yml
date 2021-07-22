@@ -1,0 +1,33 @@
+---
+
+- name: "configure : postgresql-setup : initdb"
+  shell: "/usr/bin/postgresql-setup --initdb"
+  args:
+    creates: "/var/lib/pgsql/data/PG_VERSION"
+  register: initdb
+
+- name: "configure : postgresql-setup : upgrade"
+  shell: "/usr/bin/postgresql-setup --upgrade"
+  when: "pgdg_installation is changed and initdb is not changed"
+
+- name: "configure : postgresql.conf"
+  lineinfile:
+    path: "/var/lib/pgsql/data/postgresql.conf"
+    regexp: '#?{{ item.k }} =.*'
+    line: '{{ item.k }} = {{ item.v }}'
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ pgdg_postgresql_conf }}"
+  register: pgdg_conf
+
+- name: "configure : pg_hba.conf"
+  template:
+    src: pg_hba.conf.j2
+    dest: "/var/lib/pgsql/data/pg_hba.conf"
+  register: pgdg_hba
+
+- name: "(re)start : postgresql"
+  systemd:
+    name: "postgresql.service"
+    state: "{% if pgdg_conf is changed or pgdg_hba is changed %}re{% endif %}started"
+    enabled: yes
+    daemon_reload: "{% if pgdg_installation is changed %}yes{% else %}no{% endif %}"
