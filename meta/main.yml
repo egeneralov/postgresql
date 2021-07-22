@@ -27,12 +27,10 @@ galaxy_info:
     - wily
     - xenial
     - zesty
-  - name: CentOS
+  - name: EL
     versions:
-    - 8
-  - name: RHEL
-    versions:
-    - 8
+      - 7
+      - 8
   galaxy_tags:
     - pgsql
     - postgres
