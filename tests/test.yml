@@ -3,10 +3,35 @@
 - hosts: postgresql
   remote_user: root
   vars:
-    pgdg_version: 9.6
+    pgdg_version: 13.3
     pgdg_users:
       - user: root
         password: root
         database: root
+    pgdg_postgresql_conf:
+      - { "k": "listen_addresses", "v": "'0.0.0.0'" }
+      - { "k": "port", "v": "5432" }
+    pgdg_pg_hba_conf:
+      - {
+          "connection_type": "local",
+          "database": "all",
+          "user": "all",
+          "address": "",
+          "method": "peer"
+        }
+      - {
+          "connection_type": "host",
+          "database": "all",
+          "user": "all",
+          "address": "0.0.0.0/0",
+          "method": "md5"
+        }
+    pgdg_databases:
+      - name: example1
+        owner: root
+      - name: example2
+        owner: root
+      - name: example3
+        owner: root
   roles:
     - egeneralov.postgresql
