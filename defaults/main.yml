@@ -1,7 +1,7 @@
 ---
 # defaults file for egeneralov.postgresql
 
-pgdg_version: 9.6
+pgdg_version: 13.3
 
 pgdg_users:
   - user: root
